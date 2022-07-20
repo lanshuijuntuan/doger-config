@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.doger</groupId>
-    <artifactId>goods</artifactId>
+    <artifactId>doger-goods</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <name>doger-goods</name>
     <description>doger-goods</description>
