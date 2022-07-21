@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("test")
 public class TestController {
 
-    @Value("${from}")
-    private String from;
 
-    @GetMapping("printFrom")
+    @Value("${env.profile}")
+    private String envProfile;
+
+    @Value("${appName}")
+    private String appName;
+
+    @GetMapping("printAppName")
     @ResponseBody
-    public String printFrom(){
-        return from;
+    public String printAppName(){
+        return appName+":"+envProfile;
     }
 }
