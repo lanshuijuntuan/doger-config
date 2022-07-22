@@ -22,4 +22,8 @@ public class TestController {
     public String printAppName(){
         return appName+":"+envProfile;
     }
+
+
+
+
 }
