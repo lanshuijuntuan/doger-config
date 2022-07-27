@@ -1,11 +1,7 @@
 package com.doger.goods.controller;
 
-import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.EurekaClient;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.logging.Logger;
 
+@Log4j2
 @Controller
 @RequestMapping("test")
 public class TestController {
-
-    private static final Logger log= Logger.getLogger(TestController.class.getName());
 
     @Value("${env.profile}")
     private String envProfile;
