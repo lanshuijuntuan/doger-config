@@ -13,7 +13,7 @@ public class RabbitFactoryConfig {
 
 
 
-    @Value("${rabbit.host:192.168.57.73}")
+    @Value("${rabbit.host:192.168.1.120}")
     private String rabbitServerHost;
 
     @Value("${rabbit.port:5672}")
