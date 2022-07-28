@@ -129,7 +129,7 @@ public class RabbitConfig {
     }
 
     private void initTopicConsume(Channel channel) throws IOException {
-        channel.exchangeDeclare(getTopicExchange(), BuiltinExchangeType.DIRECT);
+        channel.exchangeDeclare(getTopicExchange(), BuiltinExchangeType.TOPIC);
         for ( int i=0;i<getRouteKeys().length;i++){
             String key=getRouteKeys()[i];
             String topicKey=key+".*";

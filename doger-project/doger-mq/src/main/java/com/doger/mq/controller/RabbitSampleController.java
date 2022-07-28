@@ -111,7 +111,7 @@ public class RabbitSampleController {
         String instanceId = serviceRegistration.getInstanceId();
         try (Connection connection = rabbitFactory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(rabbitConfig.getTopicExchange(),BuiltinExchangeType.DIRECT);
+            channel.exchangeDeclare(rabbitConfig.getTopicExchange(),BuiltinExchangeType.TOPIC);
             channel.basicPublish(rabbitConfig.getTopicExchange(),key,null,msg.getBytes(StandardCharsets.UTF_8));
             log.info(instanceId + "topic message:" + msg);
             return instanceId + "topic success";
