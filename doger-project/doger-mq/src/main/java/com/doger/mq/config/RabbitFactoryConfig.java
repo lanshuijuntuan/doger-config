@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitFactoryConfig {
 
 
-
-
     @Value("${rabbit.host:192.168.1.120}")
     private String rabbitServerHost;
 
