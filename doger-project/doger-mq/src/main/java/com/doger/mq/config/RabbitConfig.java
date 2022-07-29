@@ -10,6 +10,8 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,6 +48,27 @@ public class RabbitConfig {
     @Value("${rabbit.broadcastExchange:test-topic}")
     private String topicExchange;
 
+    public String getHeaderExchange() {
+        return headerExchange;
+    }
+
+    @Value("${rabbit.broadcastExchange:test-header}")
+    private String headerExchange;
+
+    public String getHeaderRouteKey() {
+        return headerRouteKey;
+    }
+
+    @Value("${rabbit.broadcastExchange:test-header-key}")
+    private String headerRouteKey;
+
+    public String getRpcKey() {
+        return rpcKey;
+    }
+
+    @Value("${rabbit.broadcastExchange:test-rpc-key}")
+    private String rpcKey;
+
 
     public String[] getRouteKeys() {
         return routeKeys;
@@ -68,7 +91,8 @@ public class RabbitConfig {
             initBroadcastConsume(channel);
             initRouteConsume(channel);
             initTopicConsume(channel);
-
+            initHeaderConsume(channel);
+            initRpcConsume(channel);
             log.info("rec block...........");
             synchronized (lock){
                 lock.wait();
@@ -145,6 +169,62 @@ public class RabbitConfig {
         }
     }
 
+
+    private void initHeaderConsume(Channel channel) throws IOException {
+        channel.exchangeDeclare(getHeaderExchange(), BuiltinExchangeType.HEADERS);
+        String routeKey=getHeaderRouteKey();
+        String queueName=channel.queueDeclare().getQueue();
+        Map<String,Object> header=new HashMap<>();
+        header.put("sex","M");
+        header.put("age",32);
+        channel.queueBind(queueName, getHeaderExchange(),routeKey,header);
+        DeliverCallback callback = (consumerTag, delivery) -> {
+            String msg = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            log.info(String.format("rec route[header=%s] message:%s",routeKey,msg));
+        };
+        channel.basicConsume(queueName, true, callback, consumerTag -> {
+        });
+
+    }
+
+    private void initRpcConsume(Channel channel) throws IOException {
+        String queueName=getRpcKey();
+        channel.queueDeclare(queueName,false, false, false, null);
+
+        DeliverCallback callback = (consumerTag, delivery) -> {
+            String correlationId=delivery.getProperties().getCorrelationId();
+            String replyQueue=delivery.getProperties().getReplyTo();
+            AMQP.BasicProperties basicProperties=new AMQP.BasicProperties().builder()
+                    .correlationId(correlationId)
+                    .build();
+            String numStr=new String(delivery.getBody(),StandardCharsets.UTF_8);
+            Integer num=Integer.parseInt(numStr);
+            String response="";
+            log.info("start calc.............");
+            if(num<0){
+                response+=0;
+            }else{
+                response+=fib(num);
+            }
+            log.info("end calc.............");
+            channel.basicPublish("",replyQueue,basicProperties,response.getBytes(StandardCharsets.UTF_8));
+        };
+        channel.basicConsume(queueName, true, callback, consumerTag -> {
+        });
+
+    }
+
+    private static int fib(int n){
+        if(n==1) {
+            return 1;
+        }
+        if(n==2){
+            return 1;
+        }
+        return fib(n-1)+fib(n-2);
+
+    }
+
     @PostConstruct
     private void init() {
         log.info("init rabbitConfig............");
@@ -162,6 +242,11 @@ public class RabbitConfig {
 
         log.info("destroy rabbitConfig complete...........");
     }
+//
+//    public static void main(String[] args) {
+//        int i=45;
+//        System.out.println(String.format("fib(%d)=%d",i,fib(i)));
+//    }
 
 
 }
