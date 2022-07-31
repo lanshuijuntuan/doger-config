@@ -2,7 +2,9 @@ package com.doger.mq.config;
 
 import com.rabbitmq.client.*;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -231,6 +233,12 @@ public class RabbitConfig {
         ExecutorService executorService= Executors.newFixedThreadPool(4);
         executorService.execute(this::initRec);
         log.info("start rabbitConfig............");
+    }
+
+
+    @Bean
+    public Queue helloQueue() {
+        return new Queue("hello");
     }
 
     @PreDestroy

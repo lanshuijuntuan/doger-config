@@ -3,6 +3,7 @@ package com.doger.mq.controller;
 
 import com.doger.mq.config.RabbitConfig;
 import com.doger.mq.config.RabbitRpcClient;
+import com.doger.mq.rabbit.Sender;
 import com.rabbitmq.client.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.ArrayUtils;
@@ -170,5 +171,15 @@ public class RabbitSampleController {
         String ret = rabbitRpcClient.call(num);
         log.info("end rpc.............");
         return ret;
+    }
+
+    @Resource
+    private Sender sender;
+
+    @GetMapping("/rabbitSender")
+    @ResponseBody
+    public String rabbitSender(@RequestParam("message") String message) {
+        sender.send(message);
+        return "success";
     }
 }
