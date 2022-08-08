@@ -1,5 +1,7 @@
 package com.doger.goods.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 @RefreshScope
 @Log4j2
@@ -40,14 +43,33 @@ public class TestController {
     }
 
 
+    @HystrixCommand(commandProperties={@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",
+            value ="1000" )},
+            fallbackMethod = "defaultPrintAppName")
     @GetMapping("printAppName")
     @ResponseBody
     public String printAppName(){
+        Random random=new Random();
+        Integer randVal=random.nextInt(100);
+        try {
+            Thread.sleep(randVal*25);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(randVal%5==0){
+         throw new IllegalArgumentException();
+        }
+
+
         String host=serviceRegistration.getHost();
         Integer port=serviceRegistration.getPort();
-        String repoStr= host+":"+port+"\n\r"+appName+":"+envProfile;
+        String repoStr= host+":"+port+"\n\r"+appName+":"+envProfile+"randVal:"+randVal;
         log.info(repoStr);
         return repoStr;
+    }
+
+    public String defaultPrintAppName(){
+        return "default value";
     }
 
     @Resource
