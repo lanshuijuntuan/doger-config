@@ -34,6 +34,7 @@ public class ProductOrderController {
 
     @RequestMapping("findById")
     public APIResponse findById(@RequestParam("id") Long id) {
+        log.info("findById id="+id);
         ProductOrder productOrder = productOrderMapper.selectByPrimaryKey(id);
         if (productOrder == null) {
             return APIResponse.fail("未找到对象");
