@@ -3,6 +3,7 @@ package com.doger.goods.controller;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.bus.event.RefreshRemoteApplicationEvent;
@@ -49,21 +50,9 @@ public class TestController {
     @GetMapping("printAppName")
     @ResponseBody
     public String printAppName(){
-        Random random=new Random();
-        Integer randVal=random.nextInt(100);
-        try {
-            Thread.sleep(randVal*25);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(randVal%5==0){
-         throw new IllegalArgumentException();
-        }
-
-
         String host=serviceRegistration.getHost();
         Integer port=serviceRegistration.getPort();
-        String repoStr= host+":"+port+"\n\r"+appName+":"+envProfile+"randVal:"+randVal;
+        String repoStr= host+":"+port+"\n\r"+appName+":"+envProfile+"randVal:"+ RandomUtils.nextInt(10);
         log.info(repoStr);
         return repoStr;
     }

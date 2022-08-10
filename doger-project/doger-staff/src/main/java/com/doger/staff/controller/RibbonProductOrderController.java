@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,10 +54,25 @@ public class RibbonProductOrderController {
 //    @HystrixCommand(fallbackMethod = "findByIdFallBack")
     @CacheResult
     private String findByCache(@CacheKey Long id) {
-        Map map = new HashMap();
-        map.put("id", id);
-        return restTemplate.getForObject("http://doger-order/order/findById?id={id}", String.class, map);
-    }
+        //urlVariableMap
+//        Map map = new HashMap();
+//        map.put("id", id);
+//        return restTemplate.getForObject("http://doger-order/order/findById?id={id}", String.class, map);
+        //uriVariables 数组
+//        return restTemplate.getForObject("http://doger-order/order/findById?id={1}", String.class, id);
+
+            try {
+                URI uri= UriComponentsBuilder.fromUriString("http://doger-order/order/findById?id={1}")
+                        .build(id);
+//                URI uri=new URI("http://doger-order/order/findById?id=1");
+               return restTemplate.getForObject(uri,String.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+
+
+        }
 
 
     String findByIdFallBack(Long id) {

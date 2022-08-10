@@ -59,6 +59,7 @@ public class TestController {
     public String consumerGreeting(@RequestParam("name") String name){
         log.info("consumerGreeting start...............");
         return restTemplate.getForEntity("http://doger-goods/greeting?name="+name,String.class).getBody();
+//        return restTemplate.getForEntity("http://192.168.57.75:8061/greeting?name="+name,String.class).getBody();
     }
 
 }
