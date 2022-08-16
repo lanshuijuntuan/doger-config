@@ -1,6 +1,10 @@
 package com.doger.nacosorder.controller;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.doger.nacosorder.service.impl.TestService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.serviceregistry.Registration;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -27,6 +31,7 @@ public class TestController {
     @Resource
     private Registration serviceRegistration;
 
+
     @GetMapping("printAppName")
     @ResponseBody
     public String printAppName(){
@@ -37,4 +42,14 @@ public class TestController {
         log.info(repoStr);
         return repoStr;
     }
+
+    @Resource
+    private TestService testService;
+
+    @GetMapping("helloEcho")
+    @ResponseBody
+    public String helloEcho(){
+        return testService.helloEcho();
+    }
+
 }

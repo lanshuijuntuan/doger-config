@@ -16,6 +16,9 @@
  */
 package com.doger.nacosconsume.nacosconfig;
 
+import com.alibaba.cloud.nacos.ribbon.NacosRule;
+import com.netflix.loadbalancer.IRule;
+import com.netflix.loadbalancer.RandomRule;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -30,10 +33,10 @@ import org.springframework.web.client.RestTemplate;
 public class NacosConfigConfiguration {
 
 
-
     @Bean
     @LoadBalanced
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 }

@@ -1,6 +1,7 @@
 package com.doger.nacosconsume.controller;
 
 
+import com.doger.nacosconsume.service.OrderService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -49,4 +50,11 @@ public class TestController {
        return restTemplate.getForObject("http://nacos-order/test/printAppName",String.class);
     }
 
+    @Resource
+    private OrderService orderService;
+
+    @RequestMapping("/consumeMsg1")
+    public String consumeMsg1(){
+        return orderService.printAppName();
+    }
 }
